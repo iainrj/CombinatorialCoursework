@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.lang.String;
 import java.util.Random;
 import java.util.Collections;
+import java.util.Arrays;
 
 public class SimulatedAnnealing {
     private double TI = 100;
@@ -73,34 +74,31 @@ public class SimulatedAnnealing {
         
         if (oldCost < 0) {
             // calculate cost of whole ranking
+            for (int index : ranking) {
+                System.out.println("index: " + index);
+                for (int j = index + 1; j < ranking.size(); j++){
+                    System.out.println("j: " + j);
+                    System.out.println("w: " + weights[j][index]);
+                    kemenyScore += weights[j][index];
+                }
+            }
         } else {
             // calculate the difference between old and new cost
             // subract every score involving x and y (swapped values) at start_indexes
             // add back score involving x and y in new indexes
-            for (int index : ranking) {
-
-            }
+            
         }
         
-
+        System.out.println("score "+ kemenyScore);
+        System.exit(0);
         return kemenyScore;
     }
 
-    // private List getDisagreements(List<Integer> ranking, int[][] weights) {
-    //     List disagreements = new ArrayList();
-
-    //     for (Integer team : ranking) {
-    //         for (int i = team + 1; team < ranking.size(); i++) {
-    //             disagreements.add(team);
-    //         }
-    //     }
-
-    //     return disagreements;
-    // }
-
     private List generateNeighbouringSolution(List<Integer> currentSolution, int val1, int val2) {
         // pick two indexes from currentSolution and swap their positions
-        return Collections.swap(currentSolution, val1, val2);
+        List<Integer> neighbour = currentSolution; 
+        Collections.swap(neighbour, val1, val2);
+        return neighbour;
     }
 
     private List constructInitialSolution() {
@@ -111,6 +109,24 @@ public class SimulatedAnnealing {
         }
 
         return initialSolution;
+    }
+
+    private void printMatrix(int[][] matrix) {
+        char[] alphabet = "  A B C D E F G H I J K L M N O P Q R S T U V W X".toCharArray();
+        char[] alphabet2 = "ABCDEFGHIJKLMNOPQRSTUVWX".toCharArray();
+
+        System.out.println(alphabet);
+        for (int i = 0; i < matrix.length; i++) {
+            System.out.print(alphabet2[i] + " ");
+            for (int j = 0; j < matrix[i].length; j++) {
+                if (matrix[i][j] == 0){
+                    System.out.print("  ");
+                } else {
+                    System.out.print(matrix[i][j] + " ");
+                }
+            }
+            System.out.println();
+        }
     }
 
     public static void main(String[] args) {
@@ -144,6 +160,7 @@ public class SimulatedAnnealing {
         }
 
         SimulatedAnnealing s1 = new SimulatedAnnealing(100, 5, 25, 0.999, weights);
+        s1.printMatrix(weights);
         List solution = s1.simulate();
         System.out.println("solution: " + solution);
     }
