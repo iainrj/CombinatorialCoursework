@@ -24,79 +24,132 @@ public class SimulatedAnnealing {
         this.weights = weights;
     }
 
-    public List simulate () {
+    public List runSA(int m) {
         List<Integer> xNow = constructInitialSolution();
-        // System.out.println("initialSolution: " + xNow);
         double t = TI;
 
         int i = 0;
+        int costXNow = getInitialCost(xNow);
+        System.out.println("initialSolution: " + xNow);
+        System.out.println("initialCost: " + costXNow);
+
+        List best = xNow;
+        int bestCost = costXNow;
+
         while (i < num_iterations) {
-//            System.out.println(i);
+            // System.out.println("iteration: " + i);        
+            if (i % m == 0 && i > 0) {
+                // System.out.println("print out current solution");
+                System.out.println("Best: " + best);
+            }
+
             for (int k = 0; k < TL; k++) {
-//                System.out.println(T);
+                System.out.println("oldSolution: " + xNow);
+                System.out.println("oldCost: " + costXNow);
+                // System.out.println("t: " + t);
                 Random random = new Random();
-                int val1 = xNow.get(random.nextInt(xNow.size()));
-                int val2 = xNow.get(random.nextInt(xNow.size()));
+                int val1 = random.nextInt(xNow.size() - 1);
+                int val2 = val1 + 1;
 
                 List xPrime = generateNeighbouringSolution(xNow, val1, val2);
-                int deltaC = getDeltaC(val1, val2, xPrime, xNow);
+                System.out.println("newSolution: " + xPrime);
+                int costXPrime = getCost(xPrime, xNow, costXNow, val1, val2); // new cost
+
+                System.out.println("cost old: " + costXNow);
+                System.out.println("cost new: " + costXPrime);
+
+                int deltaC = (costXPrime - costXNow);
+
+                System.out.println("deltaC: " + deltaC);
 
                 if (deltaC <= 0) {
+                    System.out.println("Move to this solution");
                     xNow = xPrime;
+                    costXNow = costXPrime;
                 } else {
                     double q = Math.random();
 
                     if (q < Math.exp(deltaC / t)) {
+                        System.out.println("Also move to this solution");
                         xNow = xPrime;
+                        costXNow = costXPrime;
                     }
+                }
+
+                if (costXNow <= bestCost) {
+                    bestCost = costXNow;
+                    best = xNow;
                 }
             }
             t = setNewTemperature(t);
             i++;
         }
 
-        return xNow;
+        // return xNow;
+        System.out.println(bestCost);
+        return best;
     }
 
     private double setNewTemperature(double t) {
         return cr_coefficient * t;
     }
 
-    private int getDeltaC(int val1, int val2, List xPrime, List xNow) {
-        int costXNow = getCost(xNow, -1);
-        int costXPrime = getCost(xPrime, costXNow);
-        
-        return (costXPrime - costXNow);
-    }
-
-    private int getCost(List<Integer> ranking, int oldCost) {
+    private int getInitialCost(List<Integer> ranking) {
         int kemenyScore = 0;
         
-        if (oldCost < 0) {
-            // calculate cost of whole ranking
-            for (int index : ranking) {
-                System.out.println("index: " + index);
-                for (int j = index + 1; j < ranking.size(); j++){
-                    System.out.println("j: " + j);
-                    System.out.println("w: " + weights[j][index]);
-                    kemenyScore += weights[j][index];
-                }
-            }
-        } else {
-            // calculate the difference between old and new cost
-            // subract every score involving x and y (swapped values) at start_indexes
-            // add back score involving x and y in new indexes
-            
+        for (int i=0; i < ranking.size(); i++) {
+            kemenyScore += getOffsetCost(i, ranking);
         }
         
-        System.out.println("score "+ kemenyScore);
-        System.exit(0);
         return kemenyScore;
+    } 
+    
+    private int getCost(List<Integer> ranking, List<Integer> oldRanking, int oldCost, int val1, int val2) {
+        int kemenyScore = 0;
+        
+        int removals = getRemovalsScore(val1, val2, oldRanking);
+        int additions = getAdditionsScore(val1, val2, ranking);
+        kemenyScore = (oldCost  - removals ) + additions;
+
+        return kemenyScore;
+    }
+    
+    private int getRemovalsScore(int val1, int val2, List<Integer> oldRanking) {
+      int removalsScore = 0;
+      int valueAtVal1 = oldRanking.get(val1);
+      int valueAtVal2 = oldRanking.get(val2);
+      
+      removalsScore += getOffsetCost(val1, oldRanking);
+      removalsScore += getOffsetCost(val2, oldRanking);
+
+      return removalsScore;
+    }
+    
+    private int getAdditionsScore(int val1, int val2, List<Integer> ranking) {
+      int additionsScore = 0;
+      int valueAtVal1 = ranking.get(val1);
+      int valueAtVal2 = ranking.get(val2);
+      
+      additionsScore += getOffsetCost(val1, ranking);
+      additionsScore += getOffsetCost(val2, ranking);
+      
+      return additionsScore;
+    }
+    
+    private int getOffsetCost(int offset, List<Integer> ranking) {
+        // gets the cost from ranking[offset] to the end of the List
+        int score = 0;
+        for (int j = offset + 1; j < ranking.size(); j++){
+            score += weights[ranking.get(j)][ranking.get(offset)];
+        }
+
+        return score;
     }
 
     private List generateNeighbouringSolution(List<Integer> currentSolution, int val1, int val2) {
-        // pick two indexes from currentSolution and swap their positions
-        List<Integer> neighbour = currentSolution; 
+        // pick an index from currentSolution and it's neighbour right and swap their positions
+        List<Integer> neighbour = new ArrayList<Integer>(currentSolution);
+        Collections.copy(neighbour, currentSolution); 
         Collections.swap(neighbour, val1, val2);
         return neighbour;
     }
@@ -161,7 +214,7 @@ public class SimulatedAnnealing {
 
         SimulatedAnnealing s1 = new SimulatedAnnealing(100, 5, 25, 0.999, weights);
         s1.printMatrix(weights);
-        List solution = s1.simulate();
+        List solution = s1.runSA(10);
         System.out.println("solution: " + solution);
     }
 }
