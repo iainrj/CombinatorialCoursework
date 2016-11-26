@@ -8,6 +8,7 @@ import java.lang.String;
 import java.util.Random;
 import java.util.Collections;
 import java.util.Arrays;
+import java.util.Scanner; 
 
 public class SimulatedAnnealing {
     private double TI = 100;
@@ -181,12 +182,19 @@ public class SimulatedAnnealing {
             System.out.println();
         }
     }
-
-    public static void main(String[] args) {
-        String filename = args[0];
+    
+    private static int getUserInput() {
+        Scanner scan = new Scanner(System.in);
+        System.out.print("Enter a value for m: ");
+        int m = scan.nextInt();
+        
+        return m;
+    }
+    
+    private static int[][] convertTournamentData(String filename) {
         int[][] weights = new int [24][24];
         List teams = new ArrayList();
-
+        
         try(BufferedReader br = new BufferedReader(new FileReader(filename))) {
             String line = br.readLine();
             int count = 0;
@@ -211,7 +219,15 @@ public class SimulatedAnnealing {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        
+        return weights;
+    }
 
+    public static void main(String[] args) {
+        String filename = args[0];
+        int m = getUserInput();
+        int [][] weights = convertTournamentData(filename);
+        
         SimulatedAnnealing s1 = new SimulatedAnnealing(100, 5, 25, 0.999, weights);
         s1.printMatrix(weights);
         List solution = s1.runSA(10);
