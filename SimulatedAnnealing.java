@@ -13,8 +13,8 @@ import java.util.Scanner;
 public class SimulatedAnnealing {
     private double TI = 100;
     private int TL = 5;
-    private int num_iterations = 25;
-    private double cr_coefficient = 0.999;
+    private int num_iterations = 10000;
+    private double cr_coefficient = 0.9;
     private int[][] weights;
 
     public SimulatedAnnealing(int Ti, int Tl, int num_iterations, double cr_coefficient, int[][] weights) {
@@ -31,8 +31,8 @@ public class SimulatedAnnealing {
 
         int i = 0;
         int costXNow = getInitialCost(xNow);
-        System.out.println("initialSolution: " + xNow);
-        System.out.println("initialCost: " + costXNow);
+        // System.out.println("initialSolution: " + xNow);
+        // System.out.println("initialCost: " + costXNow);
 
         List best = xNow;
         int bestCost = costXNow;
@@ -41,37 +41,37 @@ public class SimulatedAnnealing {
             // System.out.println("iteration: " + i);        
             if (i % m == 0 && i > 0) {
                 // System.out.println("print out current solution");
-                System.out.println("Best: " + best);
+                System.out.println("Best solution: " + best + " with cost: " + bestCost);
             }
 
             for (int k = 0; k < TL; k++) {
-                System.out.println("oldSolution: " + xNow);
-                System.out.println("oldCost: " + costXNow);
+                // System.out.println("oldSolution: " + xNow);
+                // System.out.println("oldCost: " + costXNow);
                 // System.out.println("t: " + t);
                 Random random = new Random();
                 int val1 = random.nextInt(xNow.size() - 1);
                 int val2 = val1 + 1;
 
                 List xPrime = generateNeighbouringSolution(xNow, val1, val2);
-                System.out.println("newSolution: " + xPrime);
+                // System.out.println("newSolution: " + xPrime);
                 int costXPrime = getCost(xPrime, xNow, costXNow, val1, val2); // new cost
 
-                System.out.println("cost old: " + costXNow);
-                System.out.println("cost new: " + costXPrime);
+                // System.out.println("cost old: " + costXNow);
+                // System.out.println("cost new: " + costXPrime);
 
                 int deltaC = (costXPrime - costXNow);
 
-                System.out.println("deltaC: " + deltaC);
+                // System.out.println("deltaC: " + deltaC);
 
                 if (deltaC <= 0) {
-                    System.out.println("Move to this solution");
+                    // System.out.println("Move to this solution");
                     xNow = xPrime;
                     costXNow = costXPrime;
                 } else {
                     double q = Math.random();
 
                     if (q < Math.exp(deltaC / t)) {
-                        System.out.println("Also move to this solution");
+                        // System.out.println("Also move to this solution");
                         xNow = xPrime;
                         costXNow = costXPrime;
                     }
@@ -86,8 +86,7 @@ public class SimulatedAnnealing {
             i++;
         }
 
-        // return xNow;
-        System.out.println(bestCost);
+        System.out.println("Best cost: " + bestCost);
         return best;
     }
 
@@ -225,12 +224,18 @@ public class SimulatedAnnealing {
 
     public static void main(String[] args) {
         String filename = args[0];
-        int m = getUserInput();
+        // int m = getUserInput();
         int [][] weights = convertTournamentData(filename);
         
-        SimulatedAnnealing s1 = new SimulatedAnnealing(100, 5, 25, 0.999, weights);
-        s1.printMatrix(weights);
-        List solution = s1.runSA(10);
+        // int Ti, int Tl, int num_iterations, double cr_coefficient, int[][] weights
+        SimulatedAnnealing s1 = new SimulatedAnnealing(10000, 750, 1000000, 0.70, weights);
+        // s1.printMatrix(weights);
+        List solution = s1.runSA(50);
         System.out.println("solution: " + solution);
     }
 }
+
+// 1000, 500, 1000000, 0.65 = 287
+// 1000, 500, 1000000, 0.70 = 272
+// 10000, 500, 1000000, 0.70 = 248
+
