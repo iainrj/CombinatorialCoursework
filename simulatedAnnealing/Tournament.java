@@ -34,6 +34,24 @@ public class Tournament {
     
     System.out.format("+-----------------+------------------+%n"); 
   }
+
+  public static void printMatrix(int[][] matrix) {
+    char[] alphabet = "  A B C D E F G H I J K L M N O P Q R S T U V W X".toCharArray();
+    char[] alphabet2 = "ABCDEFGHIJKLMNOPQRSTUVWX".toCharArray();
+
+    System.out.println(alphabet);
+    for (int i = 0; i < matrix.length; i++) {
+        System.out.print(alphabet2[i] + " ");
+        for (int j = 0; j < matrix[i].length; j++) {
+            if (matrix[i][j] == 0){
+                System.out.print("  ");
+            } else {
+                System.out.print(matrix[i][j] + " ");
+            }
+        }
+        System.out.println();
+    }
+  }
   
   public int[][] convertTournamentData(String filename) {
     try(BufferedReader br = new BufferedReader(new FileReader(filename))) {
