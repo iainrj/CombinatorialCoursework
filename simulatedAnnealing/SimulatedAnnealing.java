@@ -48,7 +48,7 @@ public class SimulatedAnnealing {
 
             for (int k = 0; k < TL; k++) {
                 // System.out.println("oldSolution: " + xNow);
-                // System.out.println("oldCost: " + xNow.getKemenyScore());
+                System.out.println("oldCost: " + xNow.getKemenyScore());
                 
                 // System.out.println("t: " + t);
                 Random random = new Random();
@@ -73,13 +73,15 @@ public class SimulatedAnnealing {
                 } else {
                     double q = Math.random();
 
-                    if (q < Math.exp(deltaC / t)) {
+                    deltaC = (-deltaC);
+                    if (q < Math.exp(deltaC/t)) {
                         xNow.setRanking(xPrime.getRanking());
                         xNow.setKemenyScore(xPrime.getKemenyScore());
+                        System.out.println(xNow.getKemenyScore());
                     }
                 }
-
-                if (costXNow <= best.getKemenyScore()) {
+                
+                if (xNow.getKemenyScore() <= best.getKemenyScore()) {
                     best.setKemenyScore(costXNow);
                     
                     List<Integer> newBestRanking = new ArrayList(xNow.getRanking());
@@ -114,16 +116,18 @@ public class SimulatedAnnealing {
         int [][] weights = iceDance1998.convertTournamentData(filename);
         
         // int Ti, int Tl, int num_iterations, double cr_coefficient, int[][] weights
-        SimulatedAnnealing s1 = new SimulatedAnnealing(10000, 750, 1000000, 0.70, weights);
+        SimulatedAnnealing s1 = new SimulatedAnnealing(500, 25, 100, 0.75, weights);
         // s1.printMatrix(weights);
         Ranking solution = s1.runSA(50);
         // System.out.println("solution: " + solution.getRanking());
         iceDance1998.getRealNames(solution.getRanking());
-        System.out.print("Kemeny Score for best Ranking: " + solution.getKemenyScore());
+        System.out.println("Kemeny Score for best Ranking: " + solution.getKemenyScore());
     }
 }
 
 // 1000, 500, 1000000, 0.65 = 287
 // 1000, 500, 1000000, 0.70 = 272
 // 10000, 500, 1000000, 0.70 = 248
+// 10000, 750, 1000000, 0.73 = 229
+// 25000, 750, 1000000, 0.73 = 290
 
