@@ -25,65 +25,55 @@ public class SimulatedAnnealing {
     }
 
     public Ranking runSA(int m) {
+        double t = TI;
+        
         Ranking xNow = new Ranking(weights);
         xNow.setRanking(xNow.constructInitialSolution());
-        double t = TI;
-
-        int i = 0;
         xNow.setKemenyScore(xNow.calculateFullCost());
-        // System.out.println("initialSolution: " + xNow.getRanking());
-        // System.out.println("initialCost: " + xNow.getKemenyScore());
-
+        
         List<Integer> xNowRanking = new ArrayList(xNow.getRanking());
         Collections.copy(xNowRanking, xNow.getRanking());
-        Ranking best = new Ranking(xNowRanking, weights); 
-        best.setKemenyScore(xNow.getKemenyScore());
-
-        while (i < num_iterations) {
-            // System.out.println("iteration: " + i);        
+        Ranking best = new Ranking(xNowRanking, weights, xNow.getKemenyScore());
+        
+        for (int i=0; i < num_iterations; i++) {
+            // System.out.println("iterations: " + i);   
             if (i % m == 0 && i > 0) {
-                // System.out.println("print out current solution");
                 System.out.println("Best solution: " + best.getRanking() + " with cost: " + best.getKemenyScore());
+                System.out.println("Current solution: " + xNow.getRanking() + " with cost: " + xNow.getKemenyScore());
             }
 
             for (int k = 0; k < TL; k++) {
-                // System.out.println("oldSolution: " + xNow);
-                System.out.println("oldCost: " + xNow.getKemenyScore());
-                
-                // System.out.println("t: " + t);
                 Random random = new Random();
                 int val1 = random.nextInt(xNow.getRanking().size() - 1);
                 int val2 = val1 + 1;
 
                 List<Integer> neighbourOfXNow = xNow.generateNeighbouringSolution(xNow.getRanking(), val1, val2);
                 Ranking xPrime = new Ranking(neighbourOfXNow, weights);
-                // System.out.println("newSolution: " + xPrime);
                 int costXNow = xNow.getKemenyScore();
                 int costXPrime = xPrime.getCost(xPrime.getRanking(), xNow.getRanking(), costXNow, val1, val2); // new cost
                 xPrime.setKemenyScore(costXPrime);
 
-                // System.out.println("cost old: " + costXNow);
-                // System.out.println("cost new: " + costXPrime);
-
                 int deltaC = (costXPrime - costXNow);
 
                 if (deltaC <= 0) {
-                    xNow.setRanking(xPrime.getRanking());
+                    List<Integer> newXNow = new ArrayList(xPrime.getRanking());
+                    Collections.copy(newXNow, xPrime.getRanking());
+                    xNow.setRanking(newXNow);
                     xNow.setKemenyScore(xPrime.getKemenyScore());
                 } else {
                     double q = Math.random();
 
-                    deltaC = (-deltaC);
-                    if (q < Math.exp(deltaC/t)) {
-                        xNow.setRanking(xPrime.getRanking());
+                    if (q < Math.exp(-(deltaC)/t)) {
+                        List<Integer> newXNow = new ArrayList(xPrime.getRanking());
+                        Collections.copy(newXNow, xPrime.getRanking());
+                        xNow.setRanking(newXNow);
                         xNow.setKemenyScore(xPrime.getKemenyScore());
-                        System.out.println(xNow.getKemenyScore());
                     }
                 }
                 
-                if (xNow.getKemenyScore() <= best.getKemenyScore()) {
-                    best.setKemenyScore(costXNow);
-                    
+                if (xNow.getKemenyScore() < best.getKemenyScore()) {
+                    i = 0;
+                    best.setKemenyScore(xNow.getKemenyScore());
                     List<Integer> newBestRanking = new ArrayList(xNow.getRanking());
                     Collections.copy(newBestRanking, xNow.getRanking());
                     best.setRanking(newBestRanking);
@@ -93,7 +83,6 @@ public class SimulatedAnnealing {
             i++;
         }
 
-        System.out.println("Best cost: " + best.getKemenyScore());
         return best;
     }
 
@@ -112,16 +101,24 @@ public class SimulatedAnnealing {
     public static void main(String[] args) {
         String filename = args[0];
         // int m = getUserInput();
+        int m = 50;
         Tournament iceDance1998 = new Tournament();
         int [][] weights = iceDance1998.convertTournamentData(filename);
+        // iceDance1998.printMatrix(weights); // un-comment to print matrix of weights
         
         // int Ti, int Tl, int num_iterations, double cr_coefficient, int[][] weights
-        SimulatedAnnealing s1 = new SimulatedAnnealing(500, 25, 100, 0.75, weights);
-        // s1.printMatrix(weights);
-        Ranking solution = s1.runSA(50);
-        // System.out.println("solution: " + solution.getRanking());
+        SimulatedAnnealing s1 = new SimulatedAnnealing(100, 10, 100, 0.95, weights);
+        
+        // From http://stackoverflow.com/questions/5204051/how-to-calculate-the-running-time-of-my-program
+        long startTime = System.nanoTime();
+        // SimulatedAnnealing runs
+        Ranking solution = s1.runSA(m);
+        // simulatedAnnealing ends
+        long runtime = System.nanoTime() - startTime;
+        
         iceDance1998.getRealNames(solution.getRanking());
         System.out.println("Kemeny Score for best Ranking: " + solution.getKemenyScore());
+        System.out.println("Runtime: " + runtime/1000000 + " milliseconds");
     }
 }
 
@@ -130,4 +127,9 @@ public class SimulatedAnnealing {
 // 10000, 500, 1000000, 0.70 = 248
 // 10000, 750, 1000000, 0.73 = 229
 // 25000, 750, 1000000, 0.73 = 290
+// 25000, 800, 1000000, 0.70 = 266
+// 25000, 800, 1000000, 0.68 = 276
+// 25000, 800, 1000000, 0.72 = 240
+// 25000, 800, 1000000, 0.75 = 280
+
 
