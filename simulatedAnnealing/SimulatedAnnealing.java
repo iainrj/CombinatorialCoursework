@@ -107,7 +107,7 @@ public class SimulatedAnnealing {
         // iceDance1998.printMatrix(weights); // un-comment to print matrix of weights
         
         // int Ti, int Tl, int num_iterations, double cr_coefficient, int[][] weights
-        SimulatedAnnealing s1 = new SimulatedAnnealing(100, 10, 100, 0.95, weights);
+        SimulatedAnnealing s1 = new SimulatedAnnealing(75, 10, 25, 0.73, weights);
         
         // From http://stackoverflow.com/questions/5204051/how-to-calculate-the-running-time-of-my-program
         long startTime = System.nanoTime();
@@ -121,15 +121,3 @@ public class SimulatedAnnealing {
         System.out.println("Runtime: " + runtime/1000000 + " milliseconds");
     }
 }
-
-// 1000, 500, 1000000, 0.65 = 287
-// 1000, 500, 1000000, 0.70 = 272
-// 10000, 500, 1000000, 0.70 = 248
-// 10000, 750, 1000000, 0.73 = 229
-// 25000, 750, 1000000, 0.73 = 290
-// 25000, 800, 1000000, 0.70 = 266
-// 25000, 800, 1000000, 0.68 = 276
-// 25000, 800, 1000000, 0.72 = 240
-// 25000, 800, 1000000, 0.75 = 280
-
-
