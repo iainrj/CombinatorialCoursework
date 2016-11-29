@@ -22,6 +22,12 @@ public class Ranking {
     kemenyScore = 0;
   }
   
+  public Ranking(List<Integer> givenRanking, int[][] givenWeights, int givenKemenyScore) {
+    ranking = givenRanking;
+    weights = givenWeights;
+    kemenyScore = givenKemenyScore;
+  }
+  
   public int calculateFullCost() {        
     for (int i=0; i < ranking.size(); i++) {
       kemenyScore += getOffsetCost(i, ranking);
@@ -100,10 +106,35 @@ public class Ranking {
   public List<Integer> constructInitialSolution() {
     List<Integer> localRanking = new ArrayList();
     
+    // localRanking.add(19);
+    // localRanking.add(23);
+    // localRanking.add(15);
+    // localRanking.add(22);
+    // localRanking.add(17);
+    // localRanking.add(14);
+    // localRanking.add(18);
+    // localRanking.add(16);
+    // localRanking.add(5);
+    // localRanking.add(21);
+    // localRanking.add(20);
+    // localRanking.add(9);
+    // localRanking.add(11);
+    // localRanking.add(10);
+    // localRanking.add(12);
+    // localRanking.add(4);
+    // localRanking.add(3);
+    // localRanking.add(8);
+    // localRanking.add(6);
+    // localRanking.add(7);
+    // localRanking.add(0);
+    // localRanking.add(1);
+    // localRanking.add(13);
+    // localRanking.add(2);
+  
     for (int i = 0; i < 24; i++) {
         localRanking.add(i);
     }
-    
+
     return localRanking;
   }
 
