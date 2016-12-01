@@ -62,7 +62,7 @@ public class Tournament {
             while (line != null) {
                 if (count > 0 && count < 25) {
                     String[] parts = line.split(",");
-                    int index = Integer.parseInt(parts[0]) - 1; // identifying number becomes index in array - 1. Rest of algorithm will use 0-23
+                    int index = Integer.parseInt(parts[0]) - 1; // identifying number becomes index in array - 1.
                     String players = parts[1]; // name of players becomes value in array
                     teams.add(index, players);
                 } else if (count > 25) {
