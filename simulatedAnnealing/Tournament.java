@@ -29,7 +29,7 @@ public class Tournament {
         System.out.format("+-----------------+------------------+%n");
         
         for (int i = 0; i < ranking.size(); i++) {
-        System.out.format(leftAlignFormat, i+1, teams.get(ranking.get(i)));
+            System.out.format(leftAlignFormat, i+1, teams.get(ranking.get(i)-1));
         }
         
         System.out.format("+-----------------+------------------+%n"); 
@@ -43,11 +43,7 @@ public class Tournament {
         for (int i = 0; i < matrix.length; i++) {
             System.out.print(alphabet2[i] + " ");
             for (int j = 0; j < matrix[i].length; j++) {
-                if (matrix[i][j] == 0){
-                    System.out.print("  ");
-                } else {
-                    System.out.print(matrix[i][j] + " ");
-                }
+                System.out.print(matrix[i][j] + " ");
             }
             System.out.println();
         }
