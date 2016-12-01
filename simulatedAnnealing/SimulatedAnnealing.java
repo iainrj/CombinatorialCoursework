@@ -69,7 +69,7 @@ public class SimulatedAnnealing {
             }
             t = setNewTemperature(t);
             
-            if (i % m == 0 && i > 0) {
+            if (i % m == 0) {
                 /* Task 2, Part 4 */
                 System.out.println("Best cost: " + best.getKemenyScore());
                 System.out.println("Current cost: " + xNow.getKemenyScore());
@@ -93,8 +93,7 @@ public class SimulatedAnnealing {
 
     public static void main(String[] args) {
         String filename = args[0];
-        // int m = getUserInput(); // Task 2, Part 2
-        int m = 100; // remove 
+        int m = getUserInput(); // Task 2, Part 2 
         Tournament iceDance1998 = new Tournament();
         int [][] weights = iceDance1998.convertTournamentData(filename); // Task 2, Part 3
         // iceDance1998.printMatrix(weights); // un-comment to print matrix of weights
