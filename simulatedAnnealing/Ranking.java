@@ -45,7 +45,7 @@ public class Ranking {
     }
     
     public int calculateFullCost() {
-        /* Calculate the kemenyScore of the current ranking, by doing a full traversal of the list*/      
+        /* Calculate the kemenyScore of the current ranking, by doing a full traversal of the list */      
         for (int i=0; i < ranking.size(); i++) {
           kemenyScore += getOffsetCost(i, ranking);
         }
@@ -91,8 +91,12 @@ public class Ranking {
     private int getOffsetCost(int offset, List<Integer> ranking) {
         /* gets the cost from the offset index to the end of the Ranking */
         int score = 0;
-        for (int j = offset + 1; j < ranking.size(); j++){
-            score += weights[ranking.get(j)][ranking.get(offset)];
+
+        for (int j = offset; j < ranking.size(); j++){
+            int atJ = ranking.get(j);
+            int atOffset = ranking.get(offset);
+            
+            score += weights[atJ-1][atOffset-1];
         }
 
         return score;
@@ -108,10 +112,10 @@ public class Ranking {
     }
 
     public List<Integer> constructInitialSolution() {
-        /* construct [0,1,2,3,4...23] as initial solution */
+        /* construct [1,2,3,4...24] as initial solution */
         List<Integer> localRanking = new ArrayList();
 
-        for (int i = 0; i < 24; i++) {
+        for (int i = 1; i < 25; i++) {
             localRanking.add(i);
         }
 
