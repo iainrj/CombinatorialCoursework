@@ -45,7 +45,7 @@ public class Ranking {
     }
     
     public int calculateFullCost() {
-        /* Calculate the kemenyScore of the current ranking, by doing a full traversal of the list */      
+        /* Calculate the kemenyScore of the current ranking, by doing a full traversal of the list*/      
         for (int i=0; i < ranking.size(); i++) {
           kemenyScore += getOffsetCost(i, ranking);
         }

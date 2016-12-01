@@ -71,8 +71,8 @@ public class SimulatedAnnealing {
             
             if (i % m == 0 && i > 0) {
                 /* Task 2, Part 4 */
-                System.out.println("Best solution: " + best.getRanking() + " with cost: " + best.getKemenyScore()); // c(Rbest)
-                System.out.println("Current solution: " + xNow.getRanking() + " with cost: " + xNow.getKemenyScore()); // c(Rnow)
+                System.out.println("Best cost: " + best.getKemenyScore());
+                System.out.println("Current cost: " + xNow.getKemenyScore());
             }
         }
 
@@ -94,13 +94,13 @@ public class SimulatedAnnealing {
     public static void main(String[] args) {
         String filename = args[0];
         // int m = getUserInput(); // Task 2, Part 2
-        int m = 10; // remove 
+        int m = 100; // remove 
         Tournament iceDance1998 = new Tournament();
         int [][] weights = iceDance1998.convertTournamentData(filename); // Task 2, Part 3
         // iceDance1998.printMatrix(weights); // un-comment to print matrix of weights
         
         // int Ti, int Tl, int num_iterations, double cr_coefficient, int[][] weights
-        SimulatedAnnealing s1 = new SimulatedAnnealing(50, 25, 5, 0.85, weights);
+        SimulatedAnnealing s1 = new SimulatedAnnealing(50, 10, 25, 0.85, weights);
         
         // From http://stackoverflow.com/questions/5204051/how-to-calculate-the-running-time-of-my-program
         long startTime = System.nanoTime();
