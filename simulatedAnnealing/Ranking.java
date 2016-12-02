@@ -53,12 +53,12 @@ public class Ranking {
         return kemenyScore;
     }
       
-    public int getCost(List<Integer> ranking, List<Integer> oldRanking, int oldCost, int val1, int val2) {
+    public int getCost(List<Integer> currentRanking, List<Integer> oldRanking, int oldCost, int val1, int val2) {
         /* Calculate the kemenyScore of a given ranking, using the oldRanking's cost and the swapped indexes */
         int kemenyScore = 0;
         
         int removals = getRemovalsScore(val1, val2, oldRanking);
-        int additions = getAdditionsScore(val1, val2, ranking);
+        int additions = getAdditionsScore(val1, val2, currentRanking);
         kemenyScore = (oldCost  - removals ) + additions;
 
         return kemenyScore;
@@ -76,25 +76,25 @@ public class Ranking {
         return removalsScore;
     }
 
-    private int getAdditionsScore(int val1, int val2, List<Integer> ranking) {
+    private int getAdditionsScore(int val1, int val2, List<Integer> currentRanking) {
         /* getRemovalsScore and getAdditionsScore are identical but are split out for ease of debugging */
         int additionsScore = 0;
-        int valueAtVal1 = ranking.get(val1);
-        int valueAtVal2 = ranking.get(val2);
+        int valueAtVal1 = currentRanking.get(val1);
+        int valueAtVal2 = currentRanking.get(val2);
         
-        additionsScore += getOffsetCost(val1, ranking);
-        additionsScore += getOffsetCost(val2, ranking);
+        additionsScore += getOffsetCost(val1, currentRanking);
+        additionsScore += getOffsetCost(val2, currentRanking);
         
         return additionsScore;
     }
 
-    private int getOffsetCost(int offset, List<Integer> ranking) {
+    private int getOffsetCost(int offset, List<Integer> givenRanking) {
         /* gets the cost from the offset index to the end of the Ranking */
         int score = 0;
 
-        for (int j = offset; j < ranking.size(); j++){
-            int atJ = ranking.get(j);
-            int atOffset = ranking.get(offset);
+        for (int j = offset; j < givenRanking.size(); j++){
+            int atJ = givenRanking.get(j);
+            int atOffset = givenRanking.get(offset);
             
             score += weights[atJ-1][atOffset-1];
         }
