@@ -36,6 +36,7 @@ public class Tournament {
     }
 
     public static void printMatrix(int[][] matrix) { 
+        /*Use A -X instead of 1-24 to avoid confusion */
         char[] alphabet = "  A B C D E F G H I J K L M N O P Q R S T U V W X".toCharArray();
         char[] alphabet2 = "ABCDEFGHIJKLMNOPQRSTUVWX".toCharArray();
 
