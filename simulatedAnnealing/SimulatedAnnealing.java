@@ -30,10 +30,8 @@ public class SimulatedAnnealing {
         Ranking xNow = new Ranking(weights);
         xNow.setRanking(xNow.constructInitialSolution());
         xNow.setKemenyScore(xNow.calculateFullCost());
-
-        List<Integer> xNowRanking = new ArrayList(xNow.getRanking());
-        Collections.copy(xNowRanking, xNow.getRanking());
-        Ranking best = new Ranking(xNowRanking, weights, xNow.getKemenyScore());
+        
+        Ranking best = new Ranking(xNow.getRanking(), weights, xNow.getKemenyScore());
         
         for (int i=0; i < num_iterations; i++) {
             for (int k = 0; k < TL; k++) {
@@ -69,7 +67,7 @@ public class SimulatedAnnealing {
             }
             t = setNewTemperature(t);
             
-            if (i % m == 0) {
+            if (i % m == 0 && i > 0) {
                 /* Task 2, Part 4 */
                 System.out.println("Best cost: " + best.getKemenyScore());
                 System.out.println("Current cost: " + xNow.getKemenyScore());
